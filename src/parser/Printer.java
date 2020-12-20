@@ -1,9 +1,12 @@
 package parser;
 
-import java.util.Collection;
+import java.io.IOException;
 
 public interface Printer<T> {
 
-    void print(Collection<T> collection);
+    void print();
+
+    void save(String path) throws IOException;
+
 
 }
