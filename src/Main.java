@@ -3,10 +3,10 @@ import java.net.URLConnection;
 import java.util.Set;
 
 import connect.Connector;
-import formatters.MarkdownFormatter;
-import parser.BlogParser;
+import formatters.TextLinkMDFormatter;
+import parser.webdev.BlogParser;
 import parser.TextLinksListPrinter;
-import parser.webdev.BlogPostTextLink;
+import components.webdev.BlogPostTextLink;
 
 public class Main {
 
@@ -21,7 +21,7 @@ public class Main {
 
         final TextLinksListPrinter<BlogPostTextLink> textLinksListPrinter = new TextLinksListPrinter<>(
             blogSummary,
-            new MarkdownFormatter<>()
+            new TextLinkMDFormatter<>()
         );
 
         textLinksListPrinter.print();

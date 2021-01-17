@@ -1,7 +1,5 @@
 package formatters;
 
-import components.TextLink;
-
-public interface Formatter<T extends TextLink> {
+public interface Formatter<T> {
     String format(T summary);
 }

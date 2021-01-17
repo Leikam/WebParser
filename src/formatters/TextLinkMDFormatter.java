@@ -2,7 +2,7 @@ package formatters;
 
 import components.TextLink;
 
-public class MarkdownFormatter<T extends TextLink> implements Formatter<T> {
+public class TextLinkMDFormatter<T extends TextLink> implements Formatter<T> {
 
     @Override
     public String format(T summary) {

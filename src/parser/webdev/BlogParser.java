@@ -1,4 +1,4 @@
-package parser;
+package parser.webdev;
 
 import java.net.URL;
 import java.util.Set;
@@ -7,7 +7,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import connect.Connector;
-import parser.webdev.BlogPostTextLink;
+import components.webdev.BlogPostTextLink;
+import parser.ASiteParser;
 
 public class BlogParser extends ASiteParser {
 

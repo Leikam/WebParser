@@ -1,9 +1,7 @@
-package parser.webdev;
+package components.webdev;
 
 import java.util.List;
-import java.util.StringJoiner;
 
-import components.TextLink;
 import components.TextLinkImpl;
 
 public class BlogPostTextLink extends TextLinkImpl {
