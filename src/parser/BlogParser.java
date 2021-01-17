@@ -2,15 +2,12 @@ package parser;
 
 import java.net.URL;
 import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import connect.Connector;
-import parser.webdev.BlogPostSummary;
+import parser.webdev.BlogPostTextLink;
 
 public class BlogParser extends ASiteParser {
 
@@ -18,12 +15,12 @@ public class BlogParser extends ASiteParser {
         super(connector);
     }
 
-    public Set<BlogPostSummary> getBlogSummary(Document document) {
+    public Set<BlogPostTextLink> getSummary(Document document) {
         final Elements cards = document.getElementsByClass("w-card-base");
         return cards.stream()
                     .flatMap(element -> element.getElementsByClass("w-card-base__link").stream())
-                    .map(element -> new BlogPostSummary(element.text(), processLink(element.attr("href"))))
-                    .filter(blogPost -> !blogPost.getName().isBlank() && !blogPost.getLink().isBlank())
+                    .map(element -> new BlogPostTextLink(element.text(), processLink(element.attr("href"))))
+                    .filter(blogPost -> !blogPost.getDescription().isBlank() && !blogPost.getLink().isBlank())
                     .collect(Collectors.toSet());
     }
 

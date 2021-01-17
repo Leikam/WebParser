@@ -1,29 +1,31 @@
 import java.io.IOException;
+import java.net.URLConnection;
 import java.util.Set;
 
 import connect.Connector;
 import formatters.MarkdownFormatter;
 import parser.BlogParser;
-import parser.BlogPostPrinter;
-import parser.webdev.BlogPostSummary;
+import parser.TextLinksListPrinter;
+import parser.webdev.BlogPostTextLink;
 
 public class Main {
 
     public static void main(String[] args) throws IOException {
 
         final Connector connector = new Connector("web.dev");
-        final StringBuffer htmlString = connector.getContent(connector.connect("/blog/"));
+        final URLConnection blogPage = connector.go("/blog/");
+        final String pageContent = connector.getPageContent(blogPage).toString();
 
-        final BlogParser parser = new BlogParser(connector);
-        final Set<BlogPostSummary> blogSummary = parser.getBlogSummary(parser.parse(htmlString.toString()));
+        final BlogParser devBlogParser = new BlogParser(connector);
+        final Set<BlogPostTextLink> blogSummary = devBlogParser.getSummary(devBlogParser.parse(pageContent));
 
-        final BlogPostPrinter<BlogPostSummary> blogPostPrinter = new BlogPostPrinter<>(
+        final TextLinksListPrinter<BlogPostTextLink> textLinksListPrinter = new TextLinksListPrinter<>(
             blogSummary,
             new MarkdownFormatter<>()
         );
 
-//        blogPostPrinter.print();
-        blogPostPrinter.save("saved/web.dev.summary.md");
+        textLinksListPrinter.print();
+        textLinksListPrinter.save("saved/web.dev.summary.md");
 
     }
 

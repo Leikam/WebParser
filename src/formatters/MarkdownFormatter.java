@@ -1,12 +1,12 @@
 package formatters;
 
-import parser.webdev.Summary;
+import components.TextLink;
 
-public class MarkdownFormatter<T extends Summary> implements Formatter<T> {
+public class MarkdownFormatter<T extends TextLink> implements Formatter<T> {
 
     @Override
     public String format(T summary) {
-        return String.format("1. [%s](%s)\n", summary.getName(), summary.getLink());
+        return String.format("1. [%s](%s)\n", summary.getDescription(), summary.getLink());
     }
 
 }

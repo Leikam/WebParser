@@ -5,22 +5,45 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
 public class Connector {
 
-    private String www;
+    private final String www;
     private URL url;
+    private boolean useHttp;
 
-    public Connector(String www) throws MalformedURLException {
+    public Connector(String www) {
         this.www = www;
     }
 
-    public URLConnection connect(String query) {
+    public boolean isUseHttp() {
+        return useHttp;
+    }
+
+    public Connector withUseHttps(boolean useHttps) {
+        this.useHttp = useHttps;
+        return this;
+    }
+
+    public URLConnection go(String query) {
+        if (query == null) {
+            throw new IllegalArgumentException("Нужно указать ссылку");
+        }
+
         try {
-            this.url = new URL("https://" + this.www + query);
+
+            if (query.charAt(0) != '/') {
+                query += "/";
+            }
+
+            if (getWebAddress().startsWith("http")) {
+                this.url = new URL(getWebAddress() + query);
+            } else {
+                this.url = new URL((this.isUseHttp() ? "http" : "https"), getWebAddress(), query);
+            }
+
             return this.url.openConnection();
         } catch (IOException e) {
             e.printStackTrace();
@@ -28,7 +51,7 @@ public class Connector {
         return null;
     }
 
-    public String getWww() {
+    public String getWebAddress() {
         return www;
     }
 
@@ -36,7 +59,7 @@ public class Connector {
         return url;
     }
 
-    public StringBuffer getContent(URLConnection connection) throws IOException {
+    public StringBuffer getPageContent(URLConnection connection) throws IOException {
         final StringBuffer stringBuffer = new StringBuffer();
         readStream(stringBuffer, connection.getInputStream());
         return stringBuffer;

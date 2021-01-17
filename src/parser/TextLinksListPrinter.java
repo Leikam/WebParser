@@ -8,18 +8,18 @@ import java.nio.file.Path;
 import java.util.Set;
 
 import formatters.Formatter;
-import parser.webdev.Summary;
+import components.TextLink;
 
-public class BlogPostPrinter<T extends Summary> implements Printer<T> {
+public class TextLinksListPrinter<T extends TextLink> implements Printer<T> {
 
     private final Set<T> summaryCollection;
     private final Formatter<T> printer;
 
-    public BlogPostPrinter(Set<T> summaryCollection) {
-        this(summaryCollection, summary -> String.format("%s [%s]%n", summary.getName(), summary.getLink()));
+    public TextLinksListPrinter(Set<T> summaryCollection) {
+        this(summaryCollection, summary -> String.format("%s [%s]%n", summary.getDescription(), summary.getLink()));
     }
 
-    public BlogPostPrinter(Set<T> summaryCollection,  Formatter<T> formatter) {
+    public TextLinksListPrinter(Set<T> summaryCollection, Formatter<T> formatter) {
         this.summaryCollection = summaryCollection;
         this.printer = formatter;
     }
@@ -42,15 +42,14 @@ public class BlogPostPrinter<T extends Summary> implements Printer<T> {
 
         if (path.isAbsolute()) {
             if (!path.startsWith(System.getProperty("user.dir"))) {
-                path = Path.of(path.toString().replaceFirst(path.getFileSystem().getSeparator(), ""));
-                path = path.toAbsolutePath();
+                path = Path.of(path.toString().replaceFirst(path.getFileSystem().getSeparator(), "")).toAbsolutePath();
             }
         }
 
-        final Path directories = path.getParent();
+        final Path directory = path.getParent();
 
-        if (Files.notExists(directories)) {
-            Files.createDirectories(directories);
+        if (Files.notExists(directory)) {
+            Files.createDirectories(directory);
         } else {
             Files.delete(path);
         }
