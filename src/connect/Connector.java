@@ -65,6 +65,10 @@ public class Connector {
         return stringBuffer;
     }
 
+    public String getPageStringContent(URLConnection connection) throws IOException {
+        return getPageContent(connection).toString();
+    }
+
     private void readStream(StringBuffer stringBuffer, InputStream inputStream) throws IOException {
         final Reader reader = new InputStreamReader(inputStream);
         try (BufferedReader in = new BufferedReader(reader)) {

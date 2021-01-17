@@ -14,10 +14,10 @@ public class Main {
 
         final Connector connector = new Connector("web.dev");
         final URLConnection blogPage = connector.go("/blog/");
-        final String pageContent = connector.getPageContent(blogPage).toString();
+        final String blogPageContent = connector.getPageStringContent(blogPage);
 
         final BlogParser devBlogParser = new BlogParser(connector);
-        final Set<BlogPostTextLink> blogSummary = devBlogParser.getSummary(devBlogParser.parse(pageContent));
+        final Set<BlogPostTextLink> blogSummary = devBlogParser.getSummary(devBlogParser.parse(blogPageContent));
 
         final TextLinksListPrinter<BlogPostTextLink> textLinksListPrinter = new TextLinksListPrinter<>(
             blogSummary,

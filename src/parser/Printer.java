@@ -6,7 +6,5 @@ public interface Printer<T> {
 
     void print();
 
-    void save(String path) throws IOException;
-
-
+    void save(String destination) throws IOException;
 }
