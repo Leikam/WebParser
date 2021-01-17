@@ -5,9 +5,12 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public abstract class APrinter<T> implements Printer<T> {
 
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("Обновлено: dd MMMM", new Locale("ru"));
     public static final String USER_DIR = System.getProperty("user.dir");
 
     @Override

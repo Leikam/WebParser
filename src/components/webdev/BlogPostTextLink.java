@@ -1,23 +1,24 @@
 package components.webdev;
 
 import java.util.List;
+import java.util.Optional;
 
 import components.TextLinkImpl;
 
 public class BlogPostTextLink extends TextLinkImpl {
 
-    private List<String> tags;
+    private Optional<List<String>> tags;
 
     public BlogPostTextLink(String description, String link) {
         super(description, link);
     }
 
-    public List<String> getTags() {
+    public Optional<List<String>> getTags() {
         return tags;
     }
 
     public BlogPostTextLink withTags(List<String> tags) {
-        this.tags = tags;
+        this.tags = Optional.ofNullable(tags);
         return this;
     }
 

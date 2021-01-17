@@ -1,13 +1,15 @@
 package parser.webdev;
 
 import java.net.URL;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import connect.Connector;
 import components.webdev.BlogPostTextLink;
+import connect.Connector;
 import parser.ASiteParser;
 
 public class BlogParser extends ASiteParser {
@@ -18,11 +20,22 @@ public class BlogParser extends ASiteParser {
 
     public Set<BlogPostTextLink> getSummary(Document document) {
         final Elements cards = document.getElementsByClass("w-card-base");
-        return cards.stream()
-                    .flatMap(element -> element.getElementsByClass("w-card-base__link").stream())
-                    .map(element -> new BlogPostTextLink(element.text(), processLink(element.attr("href"))))
-                    .filter(blogPost -> !blogPost.getDescription().isBlank() && !blogPost.getLink().isBlank())
-                    .collect(Collectors.toSet());
+
+        Set<BlogPostTextLink> shortPosts = new HashSet<>();
+        for (Element card : cards) {
+            final Elements link = card.getElementsByClass("w-card-base__link");
+            final String description = link.text();
+            String href = link.attr("href");
+            if (href != null && description != null) {
+                shortPosts.add(new BlogPostTextLink(description, processLink(href)).withTags(getCardTags(card)));
+            }
+        }
+
+        return shortPosts;
+    }
+
+    private List<String> getCardTags(Element element) {
+        return element.getElementsByClass("w-chip").eachText();
     }
 
     private String processLink(String href) {

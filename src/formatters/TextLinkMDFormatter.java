@@ -1,8 +1,8 @@
 package formatters;
 
-import components.TextLink;
+import components.webdev.BlogPostTextLink;
 
-public class TextLinkMDFormatter<T extends TextLink> implements Formatter<T> {
+public class TextLinkMDFormatter<T extends BlogPostTextLink> implements Formatter<T> {
 
     @Override
     public String format(T summary) {

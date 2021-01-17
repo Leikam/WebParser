@@ -1,5 +1,7 @@
 package parser;
 
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,9 +24,9 @@ public class TextLinksListPrinter<T extends TextLink> extends APrinter<T> {
 
     @Override
     protected String getContent() {
-        return linksCollection.stream()
-                          .map(this.formatter::format)
-                          .collect(Collectors.joining(""));
+        return new StringBuilder(DATE_TIME_FORMATTER.format(Instant.now().atZone(ZoneId.systemDefault()).toLocalDate()) + "\n\n")
+            .append(linksCollection.stream().map(this.formatter::format).collect(Collectors.joining("")))
+            .toString();
     }
 
 }

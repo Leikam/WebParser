@@ -1,12 +1,15 @@
 package connect;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import org.jsoup.helper.HttpConnection;
+import org.jsoup.nodes.Document;
 
 public class Connector {
 
@@ -44,7 +47,10 @@ public class Connector {
                 this.url = new URL((this.isUseHttp() ? "http" : "https"), getWebAddress(), query);
             }
 
-            return this.url.openConnection();
+            final HttpURLConnection connection = (HttpURLConnection) this.url.openConnection();
+            connection.setReadTimeout(3000);
+            connection.setRequestMethod("GET");
+            return connection;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -59,26 +65,34 @@ public class Connector {
         return url;
     }
 
-    public StringBuffer getPageContent(URLConnection connection) throws IOException {
-        final StringBuffer stringBuffer = new StringBuffer();
-        readStream(stringBuffer, connection.getInputStream());
-        return stringBuffer;
+    public StringBuilder getPageContent(URLConnection connection) throws IOException {
+        final StringBuilder stringBuider = new StringBuilder();
+        readStream(stringBuider, connection.getInputStream());
+        return stringBuider;
     }
 
     public String getPageStringContent(URLConnection connection) throws IOException {
         return getPageContent(connection).toString();
     }
 
-    private void readStream(StringBuffer stringBuffer, InputStream inputStream) throws IOException {
-        final Reader reader = new InputStreamReader(inputStream);
-        try (BufferedReader in = new BufferedReader(reader)) {
-            while (in.ready()) {
-                if (!stringBuffer.isEmpty()) {
-                    stringBuffer.append(System.lineSeparator());
-                }
-                stringBuffer.append(in.readLine());
+    public Document getDocument(URLConnection connection) throws IOException {
+        return HttpConnection.connect(connection.getURL()).get();
+    }
+
+    private void readStream(StringBuilder stringBuilder, InputStream inputStream) throws IOException {
+        final StringBuilder sb = new StringBuilder();
+        char[] buffer = new char[4096];
+        int read = 0;
+        int total = 0;
+
+        try (Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+            while ((read = reader.read(buffer, 0, buffer.length)) > 0) {
+                stringBuilder.append(buffer, 0, read);
+                total += read;
             }
         }
+
+        System.out.println("transferred = " + total);
     }
 
 }
