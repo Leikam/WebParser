@@ -12,19 +12,10 @@ import org.jsoup.select.Elements;
 import connect.Connector;
 import parser.webdev.BlogPostSummary;
 
-public class BlogParser implements SiteParser {
-
-    private Document document;
-    private Connector connector;
+public class BlogParser extends ASiteParser {
 
     public BlogParser(Connector connector) {
-        this.connector = connector;
-    }
-
-    @Override
-    public Document parse(String html) {
-        this.document = Jsoup.parse(html);
-        return this.document;
+        super(connector);
     }
 
     public Set<BlogPostSummary> getBlogSummary(Document document) {
@@ -38,10 +29,11 @@ public class BlogParser implements SiteParser {
 
     private String processLink(String href) {
         if (href.startsWith("/")) {
-            final URL url = connector.getUrl();
+            final URL url = getConnector().getUrl();
             href = url.getProtocol() + "://" + url.getHost() + href;
         }
 
         return href;
     }
+
 }

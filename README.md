@@ -1,2 +1,2 @@
 # WebParser
-Java parser for Web pages
+Java parser for https://web.dev blog shortnotes
