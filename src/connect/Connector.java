@@ -66,9 +66,9 @@ public class Connector {
     }
 
     public StringBuilder getPageContent(URLConnection connection) throws IOException {
-        final StringBuilder stringBuider = new StringBuilder();
-        readStream(stringBuider, connection.getInputStream());
-        return stringBuider;
+        final StringBuilder stringBuilder = new StringBuilder();
+        readStream(stringBuilder, connection.getInputStream());
+        return stringBuilder;
     }
 
     public String getPageStringContent(URLConnection connection) throws IOException {
