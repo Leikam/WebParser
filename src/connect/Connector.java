@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
@@ -30,31 +32,25 @@ public class Connector {
         return this;
     }
 
-    public URLConnection go(String query) {
+    public URLConnection go(String query) throws IOException {
         if (query == null) {
             throw new IllegalArgumentException("Нужно указать ссылку");
         }
 
-        try {
-
-            if (query.charAt(0) != '/') {
-                query += "/";
-            }
-
-            if (getWebAddress().startsWith("http")) {
-                this.url = new URL(getWebAddress() + query);
-            } else {
-                this.url = new URL((this.isUseHttp() ? "http" : "https"), getWebAddress(), query);
-            }
-
-            final HttpURLConnection connection = (HttpURLConnection) this.url.openConnection();
-            connection.setReadTimeout(3000);
-            connection.setRequestMethod("GET");
-            return connection;
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (query.charAt(0) != '/') {
+            query += "/";
         }
-        return null;
+
+        if (getWebAddress().startsWith("http")) {
+            this.url = new URL(getWebAddress() + query);
+        } else {
+            this.url = new URL((this.isUseHttp() ? "http" : "https"), getWebAddress(), query);
+        }
+
+        final HttpURLConnection connection = (HttpURLConnection) this.url.openConnection();
+        connection.setReadTimeout(3000);
+        connection.setRequestMethod("GET");
+        return connection;
     }
 
     public String getWebAddress() {
@@ -66,9 +62,7 @@ public class Connector {
     }
 
     public StringBuilder getPageContent(URLConnection connection) throws IOException {
-        final StringBuilder stringBuilder = new StringBuilder();
-        readStream(stringBuilder, connection.getInputStream());
-        return stringBuilder;
+        return readStream(connection.getInputStream());
     }
 
     public String getPageStringContent(URLConnection connection) throws IOException {
@@ -79,20 +73,22 @@ public class Connector {
         return HttpConnection.connect(connection.getURL()).get();
     }
 
-    private void readStream(StringBuilder stringBuilder, InputStream inputStream) throws IOException {
+    private StringBuilder readStream(InputStream inputStream) throws IOException {
         final StringBuilder sb = new StringBuilder();
         char[] buffer = new char[4096];
-        int read = 0;
         int total = 0;
+        int read = 0;
 
         try (Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
             while ((read = reader.read(buffer, 0, buffer.length)) > 0) {
-                stringBuilder.append(buffer, 0, read);
+                sb.append(buffer, 0, read);
                 total += read;
             }
         }
 
         System.out.println("transferred = " + total);
+
+        return sb;
     }
 
 }
